@@ -17,7 +17,7 @@ public class RouteFinder {
 	public static void main(String[] args) {
 		
 		//Set up main frame
-		mainFrame.setSize(800, 500);
+		mainFrame.setSize(600, 300);
 		mainFrame.setLocation(100, 150);
 		RouteFinder.setTitle("Home");
 		mainFrame.setResizable(false);

@@ -48,14 +48,9 @@ public class RouteManager {
 	}
 	
 	public Route getRoute(String from, String to) {
-		System.out.println(from + to);
-		Depot fromDepot = getDepot(from);
-		Depot toDepot = getDepot(to);
-		for (Object obj : routes.toArray()) {
-			Route route = (Route) obj;
-			if (route.start == fromDepot && route.end == toDepot)
+		for (Route route : routes.toArray(new Route[0]))
+			if (route.start == getDepot(from) && route.end == getDepot(to))
 				return route;
-		}
 		return null;
 	}
 	

@@ -1,7 +1,11 @@
 package uk.co.oliwali.RouteFinder;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import uk.co.oliwali.RouteFinder.Depot;
 import uk.co.oliwali.RouteFinder.RouteManager;
@@ -29,6 +33,20 @@ public class Route {
 	
 	public List<String> getStops() {
 		return stops;
+	}
+	
+	public String getPrice(Date date) {
+		NumberFormat money = NumberFormat.getCurrencyInstance(Locale.UK);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		if (cal.get(Calendar.DATE) == cal.getActualMaximum(Calendar.DATE))
+			return money.format(price*0.9);
+		else
+			return money.format(price);
+	}
+	
+	public String getTime() {
+		return time + " minutes";
 	}
 
 }
