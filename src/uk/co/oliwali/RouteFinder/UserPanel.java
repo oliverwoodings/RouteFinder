@@ -31,6 +31,9 @@ public class UserPanel implements ItemListener, ChangeListener {
 	private JLabel bus1 = new JLabel(new ImageIcon("images/bus.png"));
 	private JLabel bus2 = new JLabel(new ImageIcon("images/bus.png"));
 	
+	/**
+	 * Creates a user tab. Multiple instances possible.
+	 */
 	public UserPanel() {
 		
 		//Initiate content
@@ -85,6 +88,11 @@ public class UserPanel implements ItemListener, ChangeListener {
 		
 	}
 	
+	/**
+	 * Re-populates the two combo boxes, making sure they cannot be the same.
+	 * @param start if true, indicates that it is initial run and does not
+	 *              preserve selected items
+	 */
 	private void populateCombos(boolean start) {
 		
 		String from;
@@ -124,7 +132,11 @@ public class UserPanel implements ItemListener, ChangeListener {
 		
 	}
 	
+	/**
+	 * Updates price, time, stops and page title
+	 */
 	public void updateInfo() {
+		
 		Route route = RouteFinder.routeManager.getRoute((String)fromList.getSelectedItem(), (String)toList.getSelectedItem());
 		priceTime.setText("Price: " + route.getPrice(((SpinnerDateModel)dateInput.getModel()).getDate()) + " Time: " + route.getFormattedTime());
 		
@@ -154,16 +166,24 @@ public class UserPanel implements ItemListener, ChangeListener {
 		RouteFinder.setTitle("Main");
 	}
 	
+	/**
+	 * Listener for item state changes. Should not be manually called.
+	 * @param event {@link ItemEvent} to parse
+	 */
 	public void itemStateChanged(ItemEvent event) {
 		Object source = event.getSource();
 		if (source == fromList || source == toList)
 			populateCombos(false);
 	}
 	
+	/**
+	 * Listener for state changes. Should not be manually called.
+	 * @param event {@link ChangeEvent} to parse
+	 */
 	public void stateChanged(ChangeEvent event) {
 		Object source = event.getSource();
 		if (source == dateInput)
-			updateInfo();
+			populateCombos(false);
 	}
 
 }

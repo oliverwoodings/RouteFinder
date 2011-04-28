@@ -36,6 +36,10 @@ public class AdminPanel implements ItemListener, ActionListener {
 	private JFileChooser loadFile = new JFileChooser();
 	private JLabel info = new JLabel("Enter 1 stop per line");
 	
+	
+	/**
+	 * Creates an administration tab. Multiple instances possible.
+	 */
 	public AdminPanel() {
 		
 		//Initiate content
@@ -99,6 +103,11 @@ public class AdminPanel implements ItemListener, ActionListener {
 		
 	}
 	
+	/**
+	 * Re-populates the two combo boxes, making sure they cannot be the same.
+	 * @param start if true, indicates that it is initial run and does not
+	 *              preserve selected items
+	 */
 	private void populateCombos(boolean start) {
 		
 		String from;
@@ -138,6 +147,9 @@ public class AdminPanel implements ItemListener, ActionListener {
 		
 	}
 	
+	/**
+	 * Gets the selected route from the combo boxes and reads them into the text area.
+	 */
 	public void updateStopList() {
 		stops.setText("");
 		Route route = RouteFinder.routeManager.getRoute((String)fromList.getSelectedItem(), (String)toList.getSelectedItem());
@@ -146,17 +158,28 @@ public class AdminPanel implements ItemListener, ActionListener {
 		RouteFinder.setTitle("Admin");
 	}
 	
+	/**
+	 * Saves the inputted stops in the text area to the selected route
+	 */
 	private void saveStops() {
 		Route route = RouteFinder.routeManager.getRoute((String)fromList.getSelectedItem(), (String)toList.getSelectedItem());
 		route.saveStops(stops.getText());
 	}
 	
+	/**
+	 * Listener for item state changes. Should not be manually called.
+	 * @param event {@link ItemEvent} to parse
+	 */
 	public void itemStateChanged(ItemEvent event) {
 		Object source = event.getSource();
 		if (source == fromList || source == toList)
 			populateCombos(false);
 	}
-
+	
+	/**
+	 * Listener for buttons. Should not be manually called
+	 * @param event - {@link ActionEvent} to parse
+	 */
 	public void actionPerformed(ActionEvent event) {
 		Object source = event.getSource();
 		if (source == saveStops)
