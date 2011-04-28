@@ -1,6 +1,7 @@
 package uk.co.oliwali.RouteFinder;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -54,8 +55,8 @@ public class RouteManager {
 		return null;
 	}
 	
-	public List<Route> getRouteList() {
-		return routes;
+	public Route[] getRouteList() {
+		return routes.toArray(new Route[0]);
 	}
 	
 	public Depot getDepot(int id) {
@@ -75,12 +76,21 @@ public class RouteManager {
 		
 	}
 	
-	public void saveRoutesToFile(File file) throws IOException {
+	public void saveRoutesToFile(File file) {
 		if (file.exists()) {
 			file.delete();
-			file.createNewFile();
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		PrintWriter out = new PrintWriter(file);
+		PrintWriter out = null;
+		try {
+			out = new PrintWriter(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 		for (Route route : routes) {
 			String output = route.start.getId() + "," + route.end.getId();
 			for (String stop : route.getStops()) {
@@ -91,8 +101,13 @@ public class RouteManager {
 		out.close();
 	}
 	
-	public void loadRoutesFromFile(File file) throws IOException {
-		Scanner scanner = new Scanner(file);
+	public void loadRoutesFromFile(File file) {
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 		while (scanner.hasNextLine()) {
 			String[] args = scanner.nextLine().split(",");
 			for (Route route : routes)

@@ -1,10 +1,13 @@
 package uk.co.oliwali.RouteFinder;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.Calendar;
 
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,32 +19,25 @@ import javax.swing.event.ChangeListener;
 
 public class UserPanel implements ItemListener, ChangeListener {
 
-	public SpringLayout layout;
-	public JPanel userPanel;
-	public JComboBox fromList;
-	public JComboBox toList;
-	public JLabel priceTime;
-	public JSpinner dateInput;
+	private SpringLayout layout = new SpringLayout();
+	private JPanel userPanel = new JPanel(layout);
+	private JComboBox fromList = new JComboBox();
+	private JComboBox toList = new JComboBox();
+	private JLabel priceTime = new JLabel("");
+	private JSpinner dateInput = new JSpinner(new SpinnerDateModel());
+	private JPanel stopPanel = new JPanel();
+	private JLabel toText = new JLabel("to");
+	private JLabel dateText = new JLabel("Date: ");
+	private JLabel bus1 = new JLabel(new ImageIcon("images/bus.png"));
+	private JLabel bus2 = new JLabel(new ImageIcon("images/bus.png"));
 	
 	public UserPanel() {
 		
-		//Set up date spinner
-		Calendar end = Calendar.getInstance();
-		Calendar start = Calendar.getInstance();
-		end.set(Calendar.YEAR + 100, Calendar.MONTH, Calendar.DATE);
-		start.set(Calendar.YEAR - 1, Calendar.MONTH, Calendar.DATE);
-		dateInput = new JSpinner(new SpinnerDateModel());
-		dateInput.addChangeListener(this);
-		
 		//Initiate content
-		layout = new SpringLayout();
-		userPanel = new JPanel(layout);
-		fromList = new JComboBox();
-		toList   = new JComboBox();
-		priceTime = new JLabel("");
 		priceTime.setFont(new Font("Dialog", 1, 18));
-		JLabel toText = new JLabel("to");
-		JLabel dateText = new JLabel("Date: ");
+		stopPanel.setBorder(BorderFactory.createTitledBorder("Stops"));
+		stopPanel.setPreferredSize(new Dimension(570, 100));
+		dateInput.addChangeListener(this);
 		
 		//Add to tab pane
 		RouteFinder.tabs.add("Main", userPanel);
@@ -53,6 +49,9 @@ public class UserPanel implements ItemListener, ChangeListener {
 		userPanel.add(toText);
 		userPanel.add(dateText);
 		userPanel.add(dateInput);
+		userPanel.add(stopPanel);
+		userPanel.add(bus1);
+		userPanel.add(bus2);
 		
 		//Set constraints
 		layout.putConstraint(SpringLayout.WEST, fromList, 173, SpringLayout.WEST, userPanel);
@@ -70,8 +69,17 @@ public class UserPanel implements ItemListener, ChangeListener {
 		layout.putConstraint(SpringLayout.WEST, dateInput, 5, SpringLayout.EAST, dateText);
 		layout.putConstraint(SpringLayout.NORTH, dateInput, 10, SpringLayout.SOUTH, fromList);
 		
-		layout.putConstraint(SpringLayout.WEST, priceTime, 170, SpringLayout.WEST, userPanel);
+		layout.putConstraint(SpringLayout.WEST, priceTime, 135, SpringLayout.WEST, userPanel);
 		layout.putConstraint(SpringLayout.NORTH, priceTime, 10, SpringLayout.SOUTH, dateInput);
+		
+		layout.putConstraint(SpringLayout.WEST, stopPanel, 10, SpringLayout.WEST, userPanel);
+		layout.putConstraint(SpringLayout.NORTH, stopPanel, 10, SpringLayout.SOUTH, priceTime);
+		
+		layout.putConstraint(SpringLayout.WEST, bus1, 30, SpringLayout.WEST, userPanel);
+		layout.putConstraint(SpringLayout.NORTH, bus1, 20, SpringLayout.NORTH, userPanel);
+		
+		layout.putConstraint(SpringLayout.EAST, bus2, -25, SpringLayout.EAST, userPanel);
+		layout.putConstraint(SpringLayout.NORTH, bus2, 20, SpringLayout.NORTH, userPanel);
 		
 		populateCombos(true);
 		
@@ -112,25 +120,50 @@ public class UserPanel implements ItemListener, ChangeListener {
 		fromList.addItemListener(this);
 		toList.addItemListener(this);
 
-		updatePriceTime();
+		updateInfo();
 		
 	}
 	
-	private void updatePriceTime() {
+	public void updateInfo() {
 		Route route = RouteFinder.routeManager.getRoute((String)fromList.getSelectedItem(), (String)toList.getSelectedItem());
-		priceTime.setText("Price: " + route.getPrice(((SpinnerDateModel)dateInput.getModel()).getDate()) + " Time: " + route.getTime());
+		priceTime.setText("Price: " + route.getPrice(((SpinnerDateModel)dateInput.getModel()).getDate()) + " Time: " + route.getFormattedTime());
+		
+		//Remove old stops and repaint
+		stopPanel.removeAll();
+		stopPanel.repaint();
+		
+		//Add in new stops
+		JLabel start = new JLabel(route.start.getName());
+		start.setForeground(Color.GRAY);
+		start.setFont(new Font("Dialog", 1, 16));
+		stopPanel.add(start);
+		stopPanel.add(new JLabel("=>"));
+		for (String stop : route.getStops()) {
+			JLabel stopLabel = new JLabel(stop);
+			stopLabel.setForeground(Color.GRAY);
+			stopLabel.setFont(new Font("Dialog", 1, 16));
+			stopPanel.add(stopLabel);
+			stopPanel.add(new JLabel("=>"));
+		}
+		JLabel end = new JLabel(route.end.getName());
+		end.setForeground(Color.GRAY);
+		end.setFont(new Font("Dialog", 1, 16));
+		stopPanel.add(end);
+		
+		//Set page title
+		RouteFinder.setTitle("Main");
 	}
 	
 	public void itemStateChanged(ItemEvent event) {
 		Object source = event.getSource();
 		if (source == fromList || source == toList)
-			this.populateCombos(false);
+			populateCombos(false);
 	}
 	
 	public void stateChanged(ChangeEvent event) {
 		Object source = event.getSource();
 		if (source == dateInput)
-			updatePriceTime();
+			updateInfo();
 	}
 
 }

@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class RouteFinder {
 	
@@ -17,16 +19,30 @@ public class RouteFinder {
 	public static void main(String[] args) {
 		
 		//Set up main frame
-		mainFrame.setSize(600, 300);
+		mainFrame.setSize(600, 275);
 		mainFrame.setLocation(100, 150);
-		RouteFinder.setTitle("Home");
 		mainFrame.setResizable(false);
 		mainFrame.setVisible(true);
 		
 		//Set up the two tabs and initiate panels
+		
 		mainFrame.add(tabs, BorderLayout.CENTER);
 		userPanel = new UserPanel();
 		adminPanel = new AdminPanel();
+		tabs.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				switch (tabs.getSelectedIndex()) {
+					case 0:
+						userPanel.updateInfo();
+						break;
+					case 1:
+						adminPanel.updateStopList();
+						break;
+				}
+			}
+		});
+		
+		RouteFinder.setTitle("Main");
 		
 	}
 	

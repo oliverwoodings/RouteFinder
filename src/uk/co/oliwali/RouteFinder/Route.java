@@ -35,6 +35,12 @@ public class Route {
 		return stops;
 	}
 	
+	public void saveStops(String stopString) {
+		stops.clear();
+		for (String stop : stopString.split("\n"))
+			addStop(stop);
+	}
+	
 	public String getPrice(Date date) {
 		NumberFormat money = NumberFormat.getCurrencyInstance(Locale.UK);
 		Calendar cal = Calendar.getInstance();
@@ -45,8 +51,13 @@ public class Route {
 			return money.format(price);
 	}
 	
-	public String getTime() {
-		return time + " minutes";
+	public String getFormattedTime() {
+		int hours = time / 60;
+		int minutes = time % 60;
+		if (hours == 1)
+			return "1 hour " + minutes + " minutes";
+		else
+			return hours + " hours " + minutes + " minutes";
 	}
 
 }
