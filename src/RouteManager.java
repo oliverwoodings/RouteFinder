@@ -1,5 +1,3 @@
-package uk.co.oliwali.RouteFinder;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -7,9 +5,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-import uk.co.oliwali.RouteFinder.Depot;
-import uk.co.oliwali.RouteFinder.Route;
 
 public class RouteManager {
 	

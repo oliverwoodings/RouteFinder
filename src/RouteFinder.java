@@ -1,5 +1,3 @@
-package uk.co.oliwali.RouteFinder;
-
 import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
